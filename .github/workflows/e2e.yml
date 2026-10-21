@@ -1,0 +1,19 @@
+name: e2e
+
+# PLANTED GAP (see README): this workflow triggers, but its only step prints a
+# line. It reports success without testing anything.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    name: e2e
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "e2e skipped"
