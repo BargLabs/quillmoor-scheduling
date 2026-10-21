@@ -1,6 +1,8 @@
 // Input validation for the scheduling API. Each validator returns either the
 // parsed value or a list of human-readable errors.
 
+import { isValidTimeZone } from "./timezone.js";
+
 export type Result<T> = { ok: true; value: T } | { ok: false; errors: string[] };
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -19,13 +21,20 @@ export function isValidDate(value: string): boolean {
 export interface SlotQuery {
   date?: string;
   clinicianId?: string;
+  /** IANA time zone; when given, `date` is a local date in this zone. */
+  tz?: string;
 }
 
 export function parseSlotQuery(params: URLSearchParams): Result<SlotQuery> {
   const errors: string[] = [];
   const query: SlotQuery = {};
   for (const key of params.keys()) {
-    if (key !== "date" && key !== "clinicianId") errors.push(`unknown query parameter: ${key}`);
+    if (key !== "date" && key !== "clinicianId" && key !== "tz") errors.push(`unknown query parameter: ${key}`);
+  }
+  const tz = params.get("tz");
+  if (tz !== null) {
+    if (isValidTimeZone(tz)) query.tz = tz;
+    else errors.push("tz must be an IANA time zone, such as Europe/London");
   }
   const date = params.get("date");
   if (date !== null) {
