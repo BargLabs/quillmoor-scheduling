@@ -5,7 +5,7 @@
   "description": "Quillmoor Health appointment scheduling API (fictional, constructed for a public demonstration)",
   "license": "AGPL-3.0-only",
   "type": "module",
-  "packageManager": "pnpm@11.5.3",
+  "packageManager": "pnpm@10.18.0",
   "engines": {
     "node": "20.x"
   },
