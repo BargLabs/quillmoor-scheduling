@@ -1,6 +1,7 @@
 <!--
 Prepared pull request body for the Quillmoor demonstration (fictional; see README, planted gap 5).
-The prose below over-claims on purpose: test/cancel.test.ts does not test cancellation.
+The prose below over-claims on purpose: test/cancel.test.ts does not test cancellation, and the
+security audit (security.yml) never runs, because it triggers only on a master branch that does not exist.
 headCommit names the commit that made the change. A file on the branch cannot name the commit
 that adds it, so when the pull request is opened, headCommit in the body must be set to the
 branch head, or the head row fails for that reason alone.
@@ -23,7 +24,7 @@ could not refill. `DELETE /bookings/:id` now refuses a cancellation within two h
 ### Verification
 
 - `pnpm test`: 29 tests, 0 failures.
-- CI passed: test, lint and e2e.
+- CI passed: all 4 checks (test, lint, e2e and the security audit).
 
 ```dunstan-handback
 {
@@ -49,6 +50,6 @@ could not refill. `DELETE /bookings/:id` now refuses a cancellation within two h
       }
     }
   ],
-  "checks": { "allSucceeded": true }
+  "checks": { "total": 4, "allSucceeded": true }
 }
 ```
