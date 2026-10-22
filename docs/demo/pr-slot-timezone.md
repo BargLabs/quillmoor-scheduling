@@ -25,7 +25,7 @@ wrong set of slots. `GET /slots` now takes an optional `tz`.
 
 ### Verification
 
-- `pnpm test`: 31 tests, 0 failures (26 before this change, 5 added).
+- `pnpm test`: 34 tests, 0 failures (29 before this change, 5 added).
 - `pnpm run typecheck` and `pnpm run lint`: clean.
 - CI has not run yet; this handback makes no claim about it.
 
@@ -44,7 +44,7 @@ wrong set of slots. `GET /slots` now takes an optional `tz`.
   "tests": [
     {
       "command": "pnpm test",
-      "count": 31,
+      "count": 34,
       "failures": 0,
       "record": {
         "kind": "junit",
