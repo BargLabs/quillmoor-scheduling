@@ -64,7 +64,7 @@ pnpm run build && pnpm start   # listens on PORT, default 3000
 | --- | --- |
 | `GET /slots?date=YYYY-MM-DD&clinicianId=clin-001` | Free slots, in start order. Both filters are optional; `date` is a UTC date. |
 | `POST /bookings` | Books a slot. JSON body `{ "slotId": "clin-001-2026-11-02-0900", "patientRef": "SYN-0001", "reason": "optional, up to 200 characters" }`. Answers 201, or 400, 404, 409 or 415. |
-| `DELETE /bookings/:id` | Cancels a booking and frees its slot. Answers 204, or 400 or 404. |
+| `DELETE /bookings/:id` | Cancels a booking and frees its slot. Answers 204, or 400, 404 or 409 (within two hours of the slot). |
 
 The store is in memory and seeded with two synthetic clinicians and five days of slots (2 to 6
 November 2026, 09:00 to 12:00 UTC, every 30 minutes).
