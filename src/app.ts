@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
-import type { Store } from "./store.js";
+import { CANCELLATION_CUTOFF_MINUTES, type Store } from "./store.js";
 import { isValidBookingId, parseBookingRequest, parseSlotQuery } from "./validation.js";
 
 const MAX_BODY_BYTES = 16 * 1024;
@@ -76,7 +76,14 @@ async function route(store: Store, req: IncomingMessage, res: ServerResponse): P
     if (method !== "DELETE") throw new HttpError(405, ["method not allowed"]);
     const id = decodeURIComponent(bookingMatch[1] ?? "");
     if (!isValidBookingId(id)) throw new HttpError(400, ["booking id must look like bkg-00001"]);
-    if (!store.deleteBooking(id)) throw new HttpError(404, ["booking not found"]);
+    const booking = store.getBooking(id);
+    if (!booking) throw new HttpError(404, ["booking not found"]);
+    if (store.isPastCancellationCutoff(booking)) {
+      throw new HttpError(409, [
+        `booking can no longer be cancelled: its slot starts within ${CANCELLATION_CUTOFF_MINUTES} minutes`,
+      ]);
+    }
+    store.deleteBooking(id);
     send(res, 204);
     return;
   }

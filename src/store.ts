@@ -36,6 +36,9 @@ export const SEED_DATES: readonly string[] = [
   "2026-11-06",
 ];
 
+/** A booking can be cancelled until this many minutes before its slot starts. */
+export const CANCELLATION_CUTOFF_MINUTES = 120;
+
 const SLOT_MINUTES = 30;
 const DAY_START_HOUR_UTC = 9;
 const SLOTS_PER_DAY = 6;
@@ -110,6 +113,14 @@ export class Store {
     this.bookings.set(id, booking);
     this.slotBookings.set(input.slotId, id);
     return booking;
+  }
+
+  /** Whether the booking's slot starts too soon for the booking to be cancelled. */
+  isPastCancellationCutoff(booking: Booking): boolean {
+    const slot = this.slots.get(booking.slotId);
+    if (!slot) return false;
+    const cutoff = Date.parse(slot.start) - CANCELLATION_CUTOFF_MINUTES * 60_000;
+    return this.now().getTime() > cutoff;
   }
 
   /** Removes a booking and frees its slot. Returns false if there was no such booking. */
