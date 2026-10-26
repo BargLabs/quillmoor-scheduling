@@ -1,5 +1,6 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { CANCELLATION_CUTOFF_MINUTES, type Store } from "./store.js";
+import { toLocalDateTime } from "./timezone.js";
 import { isValidBookingId, parseBookingRequest, parseSlotQuery } from "./validation.js";
 
 const MAX_BODY_BYTES = 16 * 1024;
@@ -57,7 +58,16 @@ async function route(store: Store, req: IncomingMessage, res: ServerResponse): P
     if (query.value.clinicianId !== undefined && !store.hasClinician(query.value.clinicianId)) {
       throw new HttpError(404, ["clinician not found"]);
     }
-    send(res, 200, { slots: store.freeSlots(query.value) });
+    const { date, clinicianId, tz } = query.value;
+    if (tz === undefined) {
+      send(res, 200, { slots: store.freeSlots({ date, clinicianId }) });
+      return;
+    }
+    const slots = store
+      .freeSlots({ clinicianId })
+      .map((slot) => ({ ...slot, localStart: toLocalDateTime(slot.start, tz), timeZone: tz }))
+      .filter((slot) => date === undefined || slot.localStart.startsWith(date));
+    send(res, 200, { slots });
     return;
   }
 

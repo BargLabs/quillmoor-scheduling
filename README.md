@@ -62,7 +62,7 @@ pnpm run build && pnpm start   # listens on PORT, default 3000
 
 | Method and path | What it does |
 | --- | --- |
-| `GET /slots?date=YYYY-MM-DD&clinicianId=clin-001` | Free slots, in start order. Both filters are optional; `date` is a UTC date. |
+| `GET /slots?date=YYYY-MM-DD&clinicianId=clin-001&tz=Europe/London` | Free slots, in start order. All three are optional. Without `tz`, `date` is a UTC date; with an IANA time zone in `tz`, `date` is a local date in that zone and each slot also carries `localStart` and `timeZone`. |
 | `POST /bookings` | Books a slot. JSON body `{ "slotId": "clin-001-2026-11-02-0900", "patientRef": "SYN-0001", "reason": "optional, up to 200 characters" }`. Answers 201, or 400, 404, 409 or 415. |
 | `DELETE /bookings/:id` | Cancels a booking and frees its slot. Answers 204, or 400, 404 or 409 (within two hours of the slot). |
 
