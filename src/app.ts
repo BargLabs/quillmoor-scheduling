@@ -51,6 +51,12 @@ async function route(store: Store, req: IncomingMessage, res: ServerResponse): P
   const url = new URL(req.url ?? "/", "http://localhost");
   const method = req.method ?? "GET";
 
+  if (url.pathname === "/health") {
+    if (method !== "GET") throw new HttpError(405, ["method not allowed"]);
+    send(res, 200, { status: "ok" });
+    return;
+  }
+
   if (url.pathname === "/slots") {
     if (method !== "GET") throw new HttpError(405, ["method not allowed"]);
     const query = parseSlotQuery(url.searchParams);
